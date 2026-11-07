@@ -9,107 +9,117 @@ class RecipePage extends StatelessWidget {
   const RecipePage({super.key, required this.recipe, required this.index});
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('The recipe')),
+    appBar: AppBar(
+      title: Text(
+        'The Mixing Book',
+        style: bookTitle(28).copyWith(fontStyle: FontStyle.italic),
+      ),
+    ),
     body: Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 700),
+        constraints: const BoxConstraints(maxWidth: 780),
         child: ListView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 30),
           children: [
             SizedBox(
-              height: 230,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: DrinkArt(index: index),
-              ),
+              height: 290,
+              child: DrinkArt(index: index, recipeName: recipe.name),
             ),
-            const SizedBox(height: 24),
-            Text(
-              recipe.category.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 10,
-                color: accent,
-                letterSpacing: 2,
-              ),
-            ),
+            const SizedBox(height: 22),
+            Text(recipe.name, style: bookTitle(52)),
             const SizedBox(height: 8),
             Text(
-              recipe.name,
-              style: const TextStyle(
-                fontSize: 34,
-                color: ink,
-                fontWeight: FontWeight.w500,
-              ),
+              recipe.glass,
+              style: const TextStyle(fontSize: 17, color: muted),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
+            const Divider(color: accent),
+            const SizedBox(height: 13),
             Text(
-              'SERVE IN A ${recipe.glass.toUpperCase()}',
-              style: const TextStyle(
-                color: Color(0xff666e5c),
-                fontSize: 11,
-                letterSpacing: 1,
-              ),
-            ),
-            const SizedBox(height: 28),
-            const Text(
               'Ingredients',
-              style: TextStyle(fontSize: 22, color: ink),
+              style: bookTitle(34).copyWith(fontStyle: FontStyle.italic),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 13),
             ...recipe.ingredients.map(
-              (i) => Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Color(0xffdeded1))),
-                ),
+              (i) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 85,
+                      width: 88,
                       child: Text(
                         i.quantity,
                         style: const TextStyle(
                           color: accent,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         i.ingredient,
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 16, height: 1.5),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 28),
-            const Text('Make it', style: TextStyle(fontSize: 22, color: ink)),
-            const SizedBox(height: 12),
+            const SizedBox(height: 23),
+            const Divider(color: accent),
+            const SizedBox(height: 13),
             Text(
-              recipe.preparation,
-              style: const TextStyle(
-                height: 1.8,
-                fontSize: 16,
-                color: Color(0xff637061),
-              ),
+              'Make it',
+              style: bookTitle(34).copyWith(fontStyle: FontStyle.italic),
             ),
-            const SizedBox(height: 28),
-            const Text(
+            const SizedBox(height: 13),
+            ...recipe.preparation
+                .split('. ')
+                .asMap()
+                .entries
+                .map(
+                  (entry) => Padding(
+                    padding: const EdgeInsets.only(bottom: 18),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 36,
+                          child: Text(
+                            '${entry.key + 1}',
+                            style: bookTitle(31).copyWith(color: accent),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            entry.value.endsWith('.')
+                                ? entry.value
+                                : '${entry.value}.',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              height: 1.7,
+                              color: ink,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            const Divider(color: accent),
+            const SizedBox(height: 13),
+            Text(
               'The finishing touch',
-              style: TextStyle(fontSize: 22, color: ink),
+              style: bookTitle(32).copyWith(fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 12),
             Text(
               recipe.garnish,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.7,
-                color: Color(0xff637061),
-              ),
+              style: const TextStyle(fontSize: 17, height: 1.6, color: muted),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 28),
           ],
         ),
       ),

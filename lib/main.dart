@@ -1,10 +1,18 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/semantics.dart';
 import 'theme.dart';
 import 'widgets/drink_art.dart';
 import 'recipe_page.dart';
 import 'package:flutter/material.dart';
 import 'recipe.dart';
 
-void main() => runApp(const RecipesApp());
+SemanticsHandle? _webSemantics;
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Keep the small web app accessible without an invisible activation gesture.
+  if (kIsWeb) _webSemantics ??= SemanticsBinding.instance.ensureSemantics();
+  runApp(const RecipesApp());
+}
 
 class RecipesApp extends StatelessWidget {
   final RecipeRepository? repository;
@@ -13,23 +21,7 @@ class RecipesApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Cocktail recipes',
-    theme: ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: accent, surface: paper),
-      scaffoldBackgroundColor: paper,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: paper,
-        foregroundColor: ink,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    ),
+    theme: recipeTheme(),
     home: HomePage(repository: repository),
   );
 }
@@ -45,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   late final RecipeRepository repository;
   List<RecipeEntity> recipes = [];
   String query = '', category = 'All', error = '';
+  final searchController = TextEditingController();
   bool loading = true;
   int generation = 0;
   @override
@@ -82,6 +75,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     generation++;
     repository.close();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -99,18 +93,15 @@ class _HomePageState extends State<HomePage> {
     final categories = ['All', ...recipes.map((x) => x.category).toSet()];
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        toolbarHeight: 68,
+        title: Row(
           children: [
-            Icon(Icons.local_bar_outlined),
-            SizedBox(width: 10),
             Text(
-              'THE MIXING BOOK',
-              style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 2,
-                fontWeight: FontWeight.w700,
-              ),
+              'The Mixing Book',
+              style: bookTitle(29).copyWith(fontStyle: FontStyle.italic),
             ),
+            const SizedBox(width: 22),
+            const Expanded(child: Divider(color: accent)),
           ],
         ),
       ),
@@ -122,11 +113,15 @@ class _HomePageState extends State<HomePage> {
               : error.isNotEmpty
               ? Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.menu_book_outlined, size: 44),
+                        const Icon(
+                          Icons.menu_book_outlined,
+                          size: 44,
+                          color: accent,
+                        ),
                         const SizedBox(height: 16),
                         Text(error, textAlign: TextAlign.center),
                         const SizedBox(height: 16),
@@ -141,73 +136,91 @@ class _HomePageState extends State<HomePage> {
               : CustomScrollView(
                   slivers: [
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      padding: const EdgeInsets.fromLTRB(22, 20, 22, 0),
                       sliver: SliverToBoxAdapter(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               repository.isDemo
-                                  ? 'SIX ZERO-PROOF IDEAS'
-                                  : 'YOUR RECIPE COLLECTION',
-                              style: const TextStyle(
-                                color: accent,
-                                fontSize: 10,
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'A little ritual.\nA good mix.',
-                              style: TextStyle(
-                                fontSize: 40,
-                                height: 1.05,
-                                color: ink,
-                                letterSpacing: -1,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  ? 'The zero-proof\nrecipe book.'
+                                  : 'The recipe book.',
+                              style: bookTitle(52),
                             ),
                             const SizedBox(height: 14),
-                            const Text(
-                              'Simple ingredients, clear steps and something worth making.',
-                              style: TextStyle(
-                                color: Color(0xff666e5c),
-                                fontSize: 13,
+                            Text(
+                              repository.isDemo
+                                  ? 'Six original drinks. Find your next mix.'
+                                  : 'Find your next mix.',
+                              style: const TextStyle(
+                                color: muted,
+                                fontSize: 15,
+                                height: 1.5,
                               ),
                             ),
-                            const SizedBox(height: 22),
+                            const SizedBox(height: 24),
                             TextField(
+                              controller: searchController,
                               decoration: const InputDecoration(
                                 labelText: 'Search recipes or ingredients',
                                 prefixIcon: Icon(Icons.search),
                               ),
-                              onChanged: (x) => setState(() => query = x),
+                              onChanged: (value) =>
+                                  setState(() => query = value),
                             ),
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              children: categories
-                                  .map(
-                                    (x) => ChoiceChip(
-                                      label: Text(x),
-                                      selected: category == x,
-                                      onSelected: (_) =>
-                                          setState(() => category = x),
-                                    ),
-                                  )
-                                  .toList(),
+                            const SizedBox(height: 14),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: categories
+                                    .map(
+                                      (value) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 20,
+                                        ),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: category == value
+                                                    ? accent
+                                                    : Colors.transparent,
+                                                width: 3,
+                                              ),
+                                            ),
+                                          ),
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: category == value
+                                                  ? accent
+                                                  : ink,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 2,
+                                                    vertical: 12,
+                                                  ),
+                                            ),
+                                            onPressed: () => setState(
+                                              () => category = value,
+                                            ),
+                                            child: Text(value),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
                             ),
-                            const SizedBox(height: 18),
+                            const Divider(color: rule, height: 1),
+                            const SizedBox(height: 15),
                             Text(
                               '${visible.length} recipes${repository.isDemo ? ' · Original demo collection' : ''}',
                               style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xff666e5c),
+                                fontSize: 12,
+                                color: muted,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
@@ -221,15 +234,23 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               const Icon(
                                 Icons.search_off,
-                                size: 42,
                                 color: accent,
+                                size: 36,
                               ),
-                              const SizedBox(height: 12),
-                              const Text('No recipes match this mix.'),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No recipes match this mix.',
+                                style: bookTitle(27),
+                              ),
                               TextButton(
-                                onPressed: () =>
-                                    setState(() => category = 'All'),
-                                child: const Text('Show all categories'),
+                                onPressed: () {
+                                  searchController.clear();
+                                  setState(() {
+                                    query = '';
+                                    category = 'All';
+                                  });
+                                },
+                                child: const Text('Clear filters'),
                               ),
                             ],
                           ),
@@ -237,110 +258,32 @@ class _HomePageState extends State<HomePage> {
                       )
                     else
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        sliver: SliverLayoutBuilder(
-                          builder: (context, constraints) {
-                            final cols = constraints.crossAxisExtent > 780
-                                ? 3
-                                : constraints.crossAxisExtent > 500
-                                ? 2
-                                : 1;
-                            return SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: cols,
-                                    mainAxisExtent: 290,
-                                    mainAxisSpacing: 18,
-                                    crossAxisSpacing: 18,
-                                  ),
-                              delegate: SliverChildBuilderDelegate((
+                        padding: const EdgeInsets.symmetric(horizontal: 22),
+                        sliver: SliverList.builder(
+                          itemCount: visible.length,
+                          itemBuilder: (context, i) {
+                            final recipe = visible[i];
+                            final index = recipes.indexOf(recipe);
+                            return _RecipeEntry(
+                              recipe: recipe,
+                              index: index,
+                              open: () => Navigator.push(
                                 context,
-                                i,
-                              ) {
-                                final r = visible[i];
-                                final index = recipes.indexOf(r);
-                                return Card(
-                                  margin: EdgeInsets.zero,
-                                  elevation: 0,
-                                  color: Colors.white,
-                                  clipBehavior: Clip.antiAlias,
-                                  child: InkWell(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            RecipePage(recipe: r, index: index),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        Expanded(child: DrinkArt(index: index)),
-                                        Padding(
-                                          padding: const EdgeInsets.all(18),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                r.category.toUpperCase(),
-                                                style: const TextStyle(
-                                                  fontSize: 9,
-                                                  color: accent,
-                                                  letterSpacing: 1.5,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                r.name,
-                                                style: const TextStyle(
-                                                  fontSize: 21,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: ink,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    '${r.ingredients.length} ingredients · ${r.glass}',
-                                                    style: const TextStyle(
-                                                      fontSize: 11,
-                                                      color: Color(0xff666e5c),
-                                                    ),
-                                                  ),
-                                                  const Icon(
-                                                    Icons.arrow_forward,
-                                                    size: 18,
-                                                    color: accent,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }, childCount: visible.length),
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      RecipePage(recipe: recipe, index: index),
+                                ),
+                              ),
                             );
                           },
                         ),
                       ),
                     const SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.all(24),
+                        padding: EdgeInsets.all(22),
                         child: Text(
-                          'Made to explore, one recipe at a time.',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Color(0xff666e5c),
-                          ),
+                          'Original recipes · Illustrative drink photography',
+                          style: TextStyle(color: muted, fontSize: 11),
                         ),
                       ),
                     ),
@@ -350,4 +293,60 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class _RecipeEntry extends StatelessWidget {
+  final RecipeEntity recipe;
+  final int index;
+  final VoidCallback open;
+  const _RecipeEntry({
+    required this.recipe,
+    required this.index,
+    required this.open,
+  });
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    child: Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: rule)),
+      ),
+      child: InkWell(
+        onTap: open,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 13),
+          child: Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width < 500 ? 116 : 190,
+                height: 112,
+                child: DrinkArt(index: index, recipeName: recipe.name),
+              ),
+              const SizedBox(width: 17),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      recipe.category,
+                      style: const TextStyle(color: muted, fontSize: 11),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(recipe.name, style: bookTitle(29)),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${recipe.ingredients.length} ingredients',
+                      style: const TextStyle(color: muted, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_forward, color: accent, size: 23),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }

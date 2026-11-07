@@ -21,7 +21,7 @@ Or choose an Android device using `flutter devices`, then `flutter run -d <devic
 
 Search for `orange` to find drinks by ingredients, choose **Sparkling**, then open **Citrus spritz**. Scroll through the quantities, preparation and finishing touch. Try a missing ingredient for the empty state.
 
-The bundled recipes and preparation text were authored for this edition. They replace a dependency on an external cocktail JSON file, keeping the example reproducible and the included content’s provenance clear. The drink illustrations are original vector drawings. The collection makes no claim to be an official bartending standard.
+The bundled recipes and preparation text were authored for this edition. They replace a dependency on an external cocktail JSON file, keeping the example reproducible and the included content’s provenance clear. The six local WebP drink photographs were generated for this edition and are illustrative; they are not a precise visual recipe specification. Cormorant Garamond and Manrope are bundled under the SIL Open Font License, with notices in `assets/fonts`. The collection makes no claim to be an official bartending standard.
 
 ## Data and optional feed
 
@@ -40,7 +40,7 @@ Amounts accept integers or decimals and must be positive. Required text fields m
 - `lib/recipe.dart`: immutable recipe/ingredient models, validation and repository.
 - `lib/main.dart`: asynchronous loading, ingredient/name search and category filters.
 - `lib/recipe_page.dart`: details in a scrollable layout, including long preparation text.
-- `lib/widgets/drink_art.dart`: vector illustration.
+- `lib/widgets/drink_art.dart`: local photograph mapping and an explicit fallback for custom-feed recipes.
 
 Search and filtering stay local to the small loaded collection. The repository is injectable for tests, async failures reach the UI, disposed screens ignore late completions, and there is no global state framework needed for this scope.
 
@@ -54,6 +54,6 @@ flutter build web
 flutter build apk --debug
 ```
 
-Tests cover bundled model data, HTTP failure/retry and a real widget flow from ingredient search to the bottom of a recipe. The UI is validated in an installed Android app and a narrow web viewport. Flutter’s web renderer may load engine/font resources on first use; the default recipe data itself is bundled.
+Tests cover bundled model data, HTTP failure/retry and a real widget flow from ingredient search to the bottom of a recipe. The UI is validated in an installed Android app and a narrow web viewport. Web semantics are enabled at startup for keyboard and assistive-technology controls. Flutter’s web renderer may load engine resources on first use; the default recipe data itself is bundled.
 
 Flutter, Material/Cupertino icons and packages retain their licenses. A distribution license for this project has not been selected.

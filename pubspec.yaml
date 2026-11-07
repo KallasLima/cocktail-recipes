@@ -22,3 +22,12 @@ flutter:
 
   assets:
     - assets/recipes.json
+    - assets/drinks/
+
+  fonts:
+    - family: BookSerif
+      fonts:
+        - asset: assets/fonts/Serif.ttf
+    - family: BookBody
+      fonts:
+        - asset: assets/fonts/Body.ttf
