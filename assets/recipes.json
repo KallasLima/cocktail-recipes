@@ -1,0 +1,161 @@
+[
+  {
+    "name": "Citrus spritz",
+    "glass": "Tall glass",
+    "category": "Sparkling",
+    "garnish": "A thin orange wheel",
+    "preparation": "Fill a tall glass with ice. Add the orange juice and lime juice, then stir gently. Top with sparkling water. Give it one slow stir and finish with an orange wheel. Serve immediately while the bubbles are fresh.",
+    "ingredients": [
+      {
+        "amount": 80,
+        "unit": "ml",
+        "ingredient": "orange juice"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "ingredient": "lime juice"
+      },
+      {
+        "amount": 100,
+        "unit": "ml",
+        "ingredient": "sparkling water"
+      }
+    ]
+  },
+  {
+    "name": "Ginger lime cooler",
+    "glass": "Highball",
+    "category": "Long drinks",
+    "garnish": "Lime wedge and mint",
+    "preparation": "Add lime juice and simple syrup to a highball filled with ice. Stir to combine, then pour in the ginger beer. Lift the mixture once with a spoon, avoiding vigorous stirring. Garnish with fresh mint and a lime wedge.",
+    "ingredients": [
+      {
+        "amount": 25,
+        "unit": "ml",
+        "ingredient": "lime juice"
+      },
+      {
+        "amount": 10,
+        "unit": "ml",
+        "ingredient": "simple syrup"
+      },
+      {
+        "amount": 150,
+        "unit": "ml",
+        "ingredient": "non-alcoholic ginger beer"
+      }
+    ]
+  },
+  {
+    "name": "Berry garden",
+    "glass": "Stemmed glass",
+    "category": "Short drinks",
+    "garnish": "A strawberry slice",
+    "preparation": "Gently crush the berries in a shaker. Add lemon juice and syrup, then shake with ice for 10 seconds. Fine strain into a chilled stemmed glass. Taste and adjust with a little water if needed. Finish with a strawberry slice.",
+    "ingredients": [
+      {
+        "amount": 60,
+        "unit": "g",
+        "ingredient": "mixed berries"
+      },
+      {
+        "amount": 20,
+        "unit": "ml",
+        "ingredient": "lemon juice"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "ingredient": "simple syrup"
+      },
+      {
+        "amount": 30,
+        "unit": "ml",
+        "ingredient": "cold water"
+      }
+    ]
+  },
+  {
+    "name": "Cucumber fizz",
+    "glass": "Tall glass",
+    "category": "Sparkling",
+    "garnish": "A ribbon of cucumber",
+    "preparation": "Muddle cucumber gently with lime juice in a shaker. Add the syrup and ice, then shake briefly. Strain into a tall glass with fresh ice. Add sparkling water and stir gently. Drape a cucumber ribbon inside the glass.",
+    "ingredients": [
+      {
+        "amount": 40,
+        "unit": "g",
+        "ingredient": "cucumber"
+      },
+      {
+        "amount": 20,
+        "unit": "ml",
+        "ingredient": "lime juice"
+      },
+      {
+        "amount": 10,
+        "unit": "ml",
+        "ingredient": "simple syrup"
+      },
+      {
+        "amount": 120,
+        "unit": "ml",
+        "ingredient": "sparkling water"
+      }
+    ]
+  },
+  {
+    "name": "Pineapple sunset",
+    "glass": "Highball",
+    "category": "Long drinks",
+    "garnish": "A small pineapple wedge",
+    "preparation": "Fill a highball with ice. Mix the pineapple juice, orange juice and lime juice in the glass. Pour the pomegranate juice slowly over the back of a spoon so it settles near the bottom. Serve with a spoon so the drink can be stirred before drinking.",
+    "ingredients": [
+      {
+        "amount": 100,
+        "unit": "ml",
+        "ingredient": "pineapple juice"
+      },
+      {
+        "amount": 50,
+        "unit": "ml",
+        "ingredient": "orange juice"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "ingredient": "lime juice"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "ingredient": "pomegranate juice"
+      }
+    ]
+  },
+  {
+    "name": "Mint tea tonic",
+    "glass": "Tall glass",
+    "category": "Long drinks",
+    "garnish": "A fresh mint sprig",
+    "preparation": "Brew the mint tea according to its packet instructions and allow it to cool completely. Fill a tall glass with ice. Add the tea and lemon juice. Top with tonic water, stir once and finish with a mint sprig. Use a small amount of syrup if you prefer a sweeter drink.",
+    "ingredients": [
+      {
+        "amount": 100,
+        "unit": "ml",
+        "ingredient": "cooled mint tea"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "ingredient": "lemon juice"
+      },
+      {
+        "amount": 100,
+        "unit": "ml",
+        "ingredient": "tonic water"
+      }
+    ]
+  }
+]
